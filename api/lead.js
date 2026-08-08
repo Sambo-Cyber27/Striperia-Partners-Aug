@@ -1,4 +1,4 @@
-const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxEadRTbEkfmJw4mIXbMZwziI-Cs2XOZBBog9MOoQfF-AJ7Ywu1fLqplva3Gf6QbRcq/exec';
+const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbzISAtvU5Y8idGOwfS9yZmsjKqA1pnA0VrVXEcoi2HLwaA-0Qok2vanSShsy6jH-xSPOQ/exec';
 
 // Future ads launch note:
 // When ads launch, add the new Meta Pixel ID and CAPI access token here.
@@ -79,6 +79,12 @@ export default async function handler(req, res) {
     const responseText = await response.text();
     if (!response.ok) {
       res.status(502).json({ ok: false, error: 'Lead webhook failed', status: response.status, response: responseText.slice(0, 500) });
+      return;
+    }
+
+    const webhookResult = JSON.parse(responseText || '{}');
+    if (webhookResult.ok === false) {
+      res.status(502).json({ ok: false, error: 'Lead webhook failed', response: webhookResult });
       return;
     }
 
