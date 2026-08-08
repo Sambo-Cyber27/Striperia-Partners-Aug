@@ -34,8 +34,23 @@ export default async function handler(req, res) {
     const webhookUrl = process.env.LEAD_WEBHOOK_URL || DEFAULT_WEBHOOK_URL;
     const lead = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
 
-    if (!lead.name || !lead.email || !lead.phone) {
+    const isDraft = req.query?.draft === '1' || lead.status === 'draft';
+    const hasDraftData = [
+      lead.name,
+      lead.email,
+      lead.phone,
+      lead.account_transactions,
+      lead.account_age,
+      lead.account_region,
+    ].some((value) => typeof value === 'string' && value.trim());
+
+    if (!isDraft && (!lead.name || !lead.email || !lead.phone)) {
       res.status(400).json({ ok: false, error: 'Missing required lead fields' });
+      return;
+    }
+
+    if (isDraft && !hasDraftData) {
+      res.status(204).end();
       return;
     }
 
