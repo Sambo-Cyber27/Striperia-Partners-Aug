@@ -54,11 +54,15 @@ export default async function handler(req, res) {
       return;
     }
 
-    const sheetLead = {
-      ...escapeLeadForSheet(lead),
-      submitted_at: new Date().toISOString(),
-      source: escapeSheetFormula(lead.source || req.headers.host || 'striperia-partners-aug'),
-    };
+    const now = new Date().toISOString();
+    const sheetLead = escapeLeadForSheet({
+      ...lead,
+      status: isDraft ? 'draft' : 'submitted',
+      draft_id: lead.draft_id || lead.id || '',
+      captured_at: now,
+      submitted_at: isDraft ? (lead.submitted_at || '') : now,
+      source: lead.source || req.headers.host || 'striperia-partners-aug',
+    });
 
     if (req.query && req.query.dryRun === '1') {
       res.status(200).json({ ok: true, dryRun: true, lead: sheetLead });
