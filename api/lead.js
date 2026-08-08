@@ -1,5 +1,10 @@
 const DEFAULT_WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxEadRTbEkfmJw4mIXbMZwziI-Cs2XOZBBog9MOoQfF-AJ7Ywu1fLqplva3Gf6QbRcq/exec';
 
+// Future ads launch note:
+// When ads launch, add the new Meta Pixel ID and CAPI access token here.
+// Keep Google Sheets as the lead destination, then send a Meta Lead event only
+// for qualified submissions where account_transactions is $10k+ or higher.
+
 const escapeSheetFormula = (value) => {
   if (typeof value !== 'string') return value;
   const trimmed = value.trimStart();
