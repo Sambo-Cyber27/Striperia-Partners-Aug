@@ -1,6 +1,9 @@
 {
   "cleanUrls": true,
   "trailingSlash": true,
+  "rewrites": [
+    { "source": "/sign/:token*", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
